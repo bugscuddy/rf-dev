@@ -7,10 +7,11 @@ import MetricsChart from "./components/MetricsChart";
 import ConstellationMap from "./components/ConstellationMap";
 import NeighborMap from "./components/NeighborMap";
 import LocationMap from "./components/LocationMap";
+import UserGuide from "./components/UserGuide";
 import type { NodeStatus, Neighbor, MetricPoint } from "./types";
 
 const API = import.meta.env.VITE_API_URL ?? "http://localhost:8080";
-type Tab = "dashboard" | "network" | "controls";
+type Tab = "dashboard" | "network" | "controls" | "help";
 
 export default function App() {
   const [status, setStatus] = useState<NodeStatus | null>(null);
@@ -44,7 +45,7 @@ export default function App() {
     fetchAll();
   }, [activeTab]);
 
-  const tabs: Tab[] = ["dashboard", "network", "controls"];
+  const tabs: Tab[] = ["dashboard", "network", "controls", "help"];
 
   return (
     <div className="app">
@@ -87,6 +88,9 @@ export default function App() {
         )}
         {activeTab === "controls" && (
           <Controls api={API} status={status} onRefresh={fetchAll} />
+        )}
+        {activeTab === "help" && (
+          <UserGuide />
         )}
       </main>
     </div>

@@ -501,3 +501,50 @@ Traceback (most recent call last):
 NameError: name 'TOKEN_FILE' is not defined
 2026-05-17 13:49:41 [INFO] __main__: Best gateway: node-a3f1
 2026-05-17 13:49:41 [INFO] __main__: Heartbeat - Neighbors: 3, Gateway: node-a3f1, Power: PowerMode.SLEEP, GW: False
+2026-05-17 13:50:11 [INFO] __main__: Best gateway: node-a3f1
+2026-05-17 13:50:11 [INFO] __main__: Heartbeat - Neighbors: 3, Gateway: node-a3f1, Power: PowerMode.LOW_POWER, GW: False
+2026-05-17 17:44:17 [INFO] __main__: Meshwork v0.1 - Booting...
+2026-05-17 17:44:17 [INFO] serial_link: Starting serial link in simulation mode
+2026-05-17 17:44:17 [INFO] serial_link: Starting simulation loop
+2026-05-17 17:44:17 [INFO] __main__: Serial link initialized (port: simulation)
+2026-05-17 17:44:17 [INFO] __main__: Starting mesh loop
+2026-05-17 17:44:17 [INFO] __main__: Best gateway: node-a3f1
+2026-05-17 17:44:17 [INFO] __main__: Heartbeat - Neighbors: 3, Gateway: node-a3f1, Power: PowerMode.REDUCED, GW: False
+2026-05-17 17:44:47 [INFO] __main__: Best gateway: node-a3f1
+2026-05-17 17:44:48 [INFO] __main__: Heartbeat - Neighbors: 3, Gateway: node-a3f1, Power: PowerMode.REDUCED, GW: False
+2026-05-17 17:45:18 [INFO] __main__: Best gateway: node-a3f1
+2026-05-17 17:45:18 [INFO] __main__: Heartbeat - Neighbors: 3, Gateway: node-a3f1, Power: PowerMode.FULL, GW: False
+2026-05-17 17:45:20 [WARNING] api: Token reset via /api/auth/token endpoint
+2026-05-17 17:45:20 [ERROR] api: Error in /api/auth/token: name 'TOKEN_FILE' is not defined
+Traceback (most recent call last):
+  File "/home/stevie732/Meshwork/server/api.py", line 187, in get_token
+    with open(TOKEN_FILE, "w") as f:
+              ^^^^^^^^^^
+NameError: name 'TOKEN_FILE' is not defined
+2026-05-17 17:45:21 [INFO] api: Authentication successful
+2026-05-17 17:45:31 [INFO] api: Gateway mode set to True
+2026-05-17 17:45:48 [INFO] __main__: Best gateway: node-a3f1
+2026-05-17 17:45:48 [INFO] __main__: Advertised as gateway
+2026-05-17 17:45:48 [INFO] __main__: Heartbeat - Neighbors: 3, Gateway: node-a3f1, Power: PowerMode.FULL, GW: True
+2026-05-17 17:46:03 [INFO] api: Bandwidth cap set to 407.0 Mbps
+2026-05-17 17:46:18 [INFO] __main__: Best gateway: node-a3f1
+2026-05-17 17:46:18 [INFO] __main__: Advertised as gateway
+2026-05-17 17:46:18 [INFO] __main__: Heartbeat - Neighbors: 3, Gateway: node-a3f1, Power: PowerMode.FULL, GW: True
+2026-05-17 17:46:48 [INFO] __main__: Best gateway: node-a3f1
+2026-05-17 17:46:48 [INFO] __main__: Advertised as gateway
+2026-05-17 17:46:48 [INFO] __main__: Heartbeat - Neighbors: 3, Gateway: node-a3f1, Power: PowerMode.REDUCED, GW: True
+2026-05-17 17:47:18 [INFO] __main__: Best gateway: node-a3f1
+2026-05-17 17:47:18 [INFO] __main__: Advertised as gateway
+2026-05-17 17:47:18 [INFO] __main__: Heartbeat - Neighbors: 3, Gateway: node-a3f1, Power: PowerMode.REDUCED, GW: True
+2026-05-17 17:47:48 [INFO] __main__: Best gateway: node-a3f1
+2026-05-17 17:47:48 [INFO] __main__: Advertised as gateway
+2026-05-17 17:47:48 [INFO] __main__: Heartbeat - Neighbors: 3, Gateway: node-a3f1, Power: PowerMode.LOW_POWER, GW: True
+2026-05-17 17:48:18 [INFO] __main__: Best gateway: node-a3f1
+2026-05-17 17:48:18 [INFO] __main__: Advertised as gateway
+2026-05-17 17:48:18 [INFO] __main__: Heartbeat - Neighbors: 3, Gateway: node-a3f1, Power: PowerMode.SLEEP, GW: True
+2026-05-17 17:48:48 [INFO] __main__: Best gateway: node-a3f1
+2026-05-17 17:48:48 [INFO] __main__: Advertised as gateway
+2026-05-17 17:48:48 [INFO] __main__: Heartbeat - Neighbors: 3, Gateway: node-a3f1, Power: PowerMode.LOW_POWER, GW: True
+2026-05-17 17:49:18 [INFO] __main__: Best gateway: node-a3f1
+2026-05-17 17:49:18 [INFO] __main__: Advertised as gateway
+2026-05-17 17:49:18 [INFO] __main__: Heartbeat - Neighbors: 3, Gateway: node-a3f1, Power: PowerMode.REDUCED, GW: True
