@@ -11,7 +11,8 @@ def init_db():
                 id        INTEGER PRIMARY KEY AUTOINCREMENT,
                 date      TEXT NOT NULL,
                 gb_shared REAL DEFAULT 0.0,
-                uptime_pct REAL DEFAULT 100.0
+                uptime_pct REAL DEFAULT 100.0,
+                is_gateway INTEGER DEFAULT 0
             )
         """)
         conn.execute("""
@@ -24,19 +25,19 @@ def init_db():
         """)
         conn.commit()
 
-def log_metric(gb_shared: float, uptime_pct: float):
+def log_metric(gb_shared: float, uptime_pct: float, is_gateway: bool = False):
     today = datetime.utcnow().strftime("%Y-%m-%d")
     with sqlite3.connect(DB_PATH) as conn:
         conn.execute(
-            "INSERT INTO metrics (date, gb_shared, uptime_pct) VALUES (?, ?, ?)",
-            (today, gb_shared, uptime_pct)
+            "INSERT INTO metrics (date, gb_shared, uptime_pct, is_gateway) VALUES (?, ?, ?, ?)",
+            (today, gb_shared, uptime_pct, 1 if is_gateway else 0)
         )
         conn.commit()
 
 def get_metrics_history(days: int = 30) -> list:
     with sqlite3.connect(DB_PATH) as conn:
         rows = conn.execute(
-            "SELECT date, gb_shared, uptime_pct FROM metrics ORDER BY date DESC LIMIT ?",
+            "SELECT date, gb_shared, uptime_pct, is_gateway FROM metrics ORDER BY date DESC LIMIT ?",
             (days,)
         ).fetchall()
-    return [{"date": r[0], "gb_shared": r[1], "uptime_pct": r[2]} for r in reversed(rows)]
+    return [{"date": r[0], "gb_shared": r[1], "uptime_pct": r[2], "is_gateway": bool(r[3])} for r in reversed(rows)]

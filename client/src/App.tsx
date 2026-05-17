@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
+import "./index.css";
 import StatusCard from "./components/StatusCard";
-import NeighborMap from "./components/NeighborMap";
-import MetricsChart from "./components/MetricsChart";
 import Controls from "./components/Controls";
+import MetricsChart from "./components/MetricsChart";
 import ConstellationMap from "./components/ConstellationMap";
+import NeighborMap from "./components/NeighborMap";
 import type { NodeStatus, Neighbor, MetricPoint } from "./types";
 
 const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
@@ -16,25 +17,31 @@ export default function App() {
   const [metrics, setMetrics] = useState<MetricPoint[]>([]);
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
 
+  const fetchAll = async () => {
+    try {
+      const [s, n, m] = await Promise.all([
+        fetch(`${API}/api/status`).then(r => r.json() as Promise<NodeStatus>),
+        fetch(`${API}/api/neighbors`).then(r => r.json() as Promise<Neighbor[]>),
+        fetch(`${API}/api/metrics/history`).then(r => r.json() as Promise<MetricPoint[]>),
+      ]);
+      setStatus(s);
+      setNeighbors(n);
+      setMetrics(m);
+    } catch {
+      console.warn("API unreachable — running in demo mode");
+    }
+  };
+
   useEffect(() => {
-    const fetchAll = async () => {
-      try {
-        const [s, n, m] = await Promise.all([
-          fetch(`${API}/api/status`).then(r => r.json() as Promise<NodeStatus>),
-          fetch(`${API}/api/neighbors`).then(r => r.json() as Promise<Neighbor[]>),
-          fetch(`${API}/api/metrics/history`).then(r => r.json() as Promise<MetricPoint[]>),
-        ]);
-        setStatus(s);
-        setNeighbors(n);
-        setMetrics(m);
-      } catch {
-        console.warn("API unreachable — running in demo mode");
-      }
-    };
     fetchAll();
     const interval = setInterval(fetchAll, 10_000);
     return () => clearInterval(interval);
   }, []);
+
+  // Refetch data when tab changes to ensure fresh data
+  useEffect(() => {
+    fetchAll();
+  }, [activeTab]);
 
   const tabs: Tab[] = ["dashboard", "network", "controls"];
 
@@ -67,7 +74,7 @@ export default function App() {
         {activeTab === "dashboard" && (
           <>
             <StatusCard status={status} />
-            <MetricsChart metrics={metrics} />
+            <MetricsChart metrics={metrics} isGatewayActive={status?.is_gateway ?? false} />
           </>
         )}
         {activeTab === "network" && (
@@ -77,7 +84,7 @@ export default function App() {
           </>
         )}
         {activeTab === "controls" && (
-          <Controls api={API} status={status} />
+          <Controls api={API} status={status} onRefresh={fetchAll} />
         )}
       </main>
     </div>

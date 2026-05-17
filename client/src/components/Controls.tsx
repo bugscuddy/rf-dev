@@ -1,9 +1,9 @@
 import { useState } from "react";
 import type { NodeStatus, SuccessResponse } from "../types";
 
-interface Props { api: string; status: NodeStatus | null; }
+interface Props { api: string; status: NodeStatus | null; onRefresh: () => void; }
 
-export default function Controls({ api, status }: Props) {
+export default function Controls({ api, status, onRefresh }: Props) {
   const [cap, setCap] = useState<number>(50);
   const [msg, setMsg] = useState<string | null>(null);
   const [msgType, setMsgType] = useState<"success" | "error">("success");
@@ -18,6 +18,7 @@ export default function Controls({ api, status }: Props) {
       const data = await res.json() as SuccessResponse;
       setMsg(data.message);
       setMsgType("success");
+      onRefresh();
     } catch {
       setMsg("Could not reach node API");
       setMsgType("error");

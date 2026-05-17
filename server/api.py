@@ -25,6 +25,12 @@ NODE_ID = f"node-{uuid.uuid4().hex[:8]}"
 _is_gateway = False
 _bandwidth_cap = 50.0
 
+def get_gateway_state() -> bool:
+    return _is_gateway
+
+def get_bandwidth_cap() -> float:
+    return _bandwidth_cap
+
 # ---- Request/Response Models ----
 
 class StatusResponse(BaseModel):
@@ -96,7 +102,8 @@ async def get_metrics():
         # seed with mock data if DB empty
         return [MetricPoint(date=f"2026-04-{i+1:02d}",
                             gb_shared=round(0.3 + i * 0.1, 1),
-                            uptime_pct=95.0 + (i % 5))
+                            uptime_pct=95.0 + (i % 5),
+                            is_gateway=i % 3 == 0)  # Every 3rd day as gateway
                 for i in range(30)]
     return [MetricPoint(**r) for r in rows]
 
@@ -104,6 +111,8 @@ async def get_metrics():
 async def set_gateway(body: GatewayToggle):
     global _is_gateway
     _is_gateway = body.enabled
+    # Log the gateway status change to metrics
+    log_metric(12.4, 95.0, _is_gateway)
     return SuccessResponse(success=True, message=f"Gateway mode set to {body.enabled}")
 
 @app.post("/api/set-bandwidth-cap", response_model=SuccessResponse)

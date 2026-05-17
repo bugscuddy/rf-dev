@@ -16,7 +16,7 @@ export default function ConstellationMap({ neighbors, status }: Props) {
     if (!ctx) return;
 
     const W = canvas.width = canvas.offsetWidth;
-    const H = canvas.height = 260;
+    const H = canvas.height = 180;
     ctx.clearRect(0, 0, W, H);
 
     const center = { x: W / 2, y: H / 2 };
@@ -85,7 +85,7 @@ export default function ConstellationMap({ neighbors, status }: Props) {
         <h2>Mesh Constellation</h2>
         <span className="badge">{neighbors.length} visible</span>
       </div>
-      <canvas ref={canvasRef} style={{ width: "100%", height: "260px", display: "block" }} />
+      <canvas ref={canvasRef} style={{ width: "100%", height: "180px", display: "block" }} />
       <div className="legend">
         <span><span className="dot green" /> Gateway</span>
         <span><span className="dot blue" /> Client Node</span>

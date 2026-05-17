@@ -22,6 +22,7 @@ export interface MetricPoint {
   date: string;
   gb_shared: number;
   uptime_pct: number;
+  is_gateway: boolean;
 }
 
 export interface SuccessResponse {
