@@ -88,13 +88,29 @@ export default function Controls({ api, status, onRefresh }: Props) {
     setTimeout(() => setMsg(null), 4000);
   };
 
+  const handleShowToken = async () => {
+    try {
+      const res = await fetch(`${api}/api/auth/token`);
+      const data = await res.json();
+      if (data.token) {
+        setTokenInput(data.token);
+        setMsg("Token retrieved - click Authenticate to use it");
+        setMsgType("success");
+      }
+    } catch {
+      setMsg("Could not retrieve token from server");
+      setMsgType("error");
+    }
+    setTimeout(() => setMsg(null), 4000);
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="controls-page">
         <div className="card">
           <div className="card-header"><h2>Authentication Required</h2></div>
           <p className="control-desc">
-            Enter your access token to manage this node. The token was displayed on first server boot.
+            Enter your access token to manage this node.
           </p>
           <div className="control-row">
             <input
@@ -106,9 +122,14 @@ export default function Controls({ api, status, onRefresh }: Props) {
               onKeyDown={e => e.key === "Enter" && handleLogin()}
             />
           </div>
-          <button className="btn-green" onClick={handleLogin}>
-            Authenticate
-          </button>
+          <div className="control-row">
+            <button className="btn-green" onClick={handleLogin}>
+              Authenticate
+            </button>
+            <button className="btn-gray" onClick={handleShowToken}>
+              Show Token
+            </button>
+          </div>
         </div>
         {msg && <div className={`toast ${msgType}`}>{msg}</div>}
       </div>
@@ -122,6 +143,15 @@ export default function Controls({ api, status, onRefresh }: Props) {
           <h2>Gateway Mode</h2>
           <button className="btn-logout" onClick={handleLogout}>Logout</button>
         </div>
+        
+        {/* Gateway Status Badge */}
+        <div className={`gateway-status-badge ${status?.is_gateway ? "status-active" : "status-inactive"}`}>
+          <div className="status-indicator"></div>
+          <span className="status-text">
+            Gateway is currently: <strong>{status?.is_gateway ? "ACTIVE" : "INACTIVE"}</strong>
+          </span>
+        </div>
+
         <p className="control-desc">
           Enable to share your internet connection with the mesh network.
         </p>

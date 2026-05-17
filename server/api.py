@@ -157,6 +157,36 @@ async def login(body: AuthRequest):
         logger.error(f"Error in /api/auth/login: {e}", exc_info=True)
         raise
 
+@app.get("/api/auth/token")
+async def get_token():
+    """
+    Development endpoint to retrieve the current authentication token.
+    This is INSECURE for production - only for local development.
+    """
+    try:
+        # Read the stored hash
+        from auth import get_stored_hash, _generate_token, _hash_token
+        stored_hash = get_stored_hash()
+        if not stored_hash:
+            # Generate a new token if none exists
+            token = _generate_token()
+            hashed = _hash_token(token)
+            with open(TOKEN_FILE, "w") as f:
+                f.write(hashed)
+            logger.warning("Generated new token via /api/auth/token endpoint")
+            return {"token": token}
+        
+        # We can't reverse the hash, so we need to generate a new one
+        logger.warning("Token reset via /api/auth/token endpoint")
+        token = _generate_token()
+        hashed = _hash_token(token)
+        with open(TOKEN_FILE, "w") as f:
+            f.write(hashed)
+        return {"token": token}
+    except Exception as e:
+        logger.error(f"Error in /api/auth/token: {e}", exc_info=True)
+        raise
+
 @app.post("/api/set-gateway", response_model=SuccessResponse)
 async def set_gateway(body: GatewayToggle, _token: str = Depends(require_auth)):
     try:

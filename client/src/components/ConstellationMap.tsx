@@ -111,25 +111,35 @@ export default function ConstellationMap({ neighbors, status }: Props) {
         ctx.fillStyle = "#e2e8f0";
         ctx.font = "9px JetBrains Mono, monospace";
         ctx.textAlign = "center";
-        ctx.fillText(node.id.slice(-4), x, y + r + 13);
+        ctx.fillText(node.id.slice(-4), x, y - r - 8);
       });
 
-      // Draw this node (center) with glow
+      // Draw this node (center) with glow - color based on gateway status
       const centerGlow = 0.5 + Math.sin(t * 2) * 0.2;
-      ctx.shadowColor = "#ffffff";
+      const isGateway = status?.is_gateway ?? false;
+      const centerColor = isGateway ? "#00ff88" : "#ffffff";
+      ctx.shadowColor = centerColor;
       ctx.shadowBlur = 15 * centerGlow;
       ctx.beginPath();
       ctx.arc(center.x, center.y, 9, 0, Math.PI * 2);
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = centerColor;
       ctx.fill();
       ctx.shadowBlur = 0;
-      ctx.fillStyle = "#0a0e1a";
+      ctx.fillStyle = isGateway ? "#0a0e1a" : "#0a0e1a";
       ctx.font = "bold 9px Inter, sans-serif";
       ctx.textAlign = "center";
       ctx.fillText("YOU", center.x, center.y + 3);
-      ctx.fillStyle = "#64748b";
-      ctx.font = "8px JetBrains Mono, monospace";
-      ctx.fillText(status?.node_id.slice(0, 10) ?? "this node", center.x, center.y + 24);
+      
+      // Gateway status badge below center node
+      if (isGateway) {
+        ctx.fillStyle = "#00ff88";
+        ctx.font = "bold 8px Inter, sans-serif";
+        ctx.fillText("GATEWAY", center.x, center.y + 24);
+      } else {
+        ctx.fillStyle = "#64748b";
+        ctx.font = "8px JetBrains Mono, monospace";
+        ctx.fillText(status?.node_id.slice(0, 10) ?? "this node", center.x, center.y + 24);
+      }
 
       animRef.current = requestAnimationFrame(draw);
     };
