@@ -1,10 +1,10 @@
-# NodeFree — Project Instructions for Windsurf
+# Meshwork — Project Instructions for Windsurf
 
 ## Mission
 Make internet access as free and universally available as air — owned by no one,
 controlled by no one, and available to everyone.
 
-NodeFree is an open-source, self-powered mesh networking device and software platform
+Meshwork is an open-source, self-powered mesh networking device and software platform
 that gives every person within 300 feet free community internet with zero monthly fee,
 zero carrier, zero technical knowledge, and zero setup required.
 
@@ -16,7 +16,7 @@ A small physical device (target cost: ~$40) combined with an AI-powered software
 
 1. Harvests ambient energy (RF, solar, thermal) to power itself — no outlet, no battery
 2. Uses free, unlicensed TV White Space (TVWS) spectrum for legal broadband backhaul
-3. Self-organizes into a neighborhood mesh network with neighboring NodeFree devices
+3. Self-organizes into a neighborhood mesh network with neighboring Meshwork devices
 4. Distributes free internet to all users in range automatically using AI-optimized routing
 5. Requires zero configuration, zero accounts, and zero ongoing cost for end users
 
@@ -24,7 +24,7 @@ A small physical device (target cost: ~$40) combined with an AI-powered software
 
 ## Tech Stack
 
-### Backend (nodefree-py/)
+### Backend (Meshwork-py/)
 - Language: Python 3.12+
 - Framework: FastAPI with Uvicorn (async)
 - Database: SQLite via Python stdlib sqlite3
@@ -37,7 +37,7 @@ A small physical device (target cost: ~$40) combined with an AI-powered software
   - energy.py     — power mode management, harvesting IC interface
   - db.py         — SQLite metrics logging
 
-### Embedded Firmware (nodefree-firmware/)
+### Embedded Firmware (Meshwork-firmware/)
 - Language: C++ (Arduino-style) for bare-metal hardware control
 - Targets: ESP32-S3, nRF9160, or GL.iNet GL-MT300N-V2
 - Responsibility: Everything Python physically cannot do —
@@ -51,7 +51,7 @@ A small physical device (target cost: ~$40) combined with an AI-powered software
   direct register access and deterministic real-time execution. All higher-level
   logic, AI, networking, and API work stays in Python.
 
-### Frontend (nodefree-ui/)
+### Frontend (Meshwork-ui/)
 - Language: TypeScript (strict mode)
 - Framework: React 18 + Vite
 - Charts: Recharts
@@ -122,7 +122,7 @@ The React frontend is served from /api/static after running: npm run build
 
 ### Backend
 ```bash
-cd nodefree-py
+cd Meshwork-py
 pip install -r requirements.txt
 python main.py
 # API: http://localhost:8080
@@ -131,7 +131,7 @@ python main.py
 
 ### Frontend
 ```bash
-cd nodefree-ui
+cd Meshwork-ui
 npm install
 npm run dev
 # UI: http://localhost:5173
@@ -139,14 +139,14 @@ npm run dev
 
 ### Production (single server)
 ```bash
-cd nodefree-ui && npm run build
-cd ../nodefree-py && python main.py
+cd Meshwork-ui && npm run build
+cd ../Meshwork-py && python main.py
 # Full app: http://localhost:8080
 ```
 
 ### Firmware (C++)
 ```bash
-cd nodefree-firmware
+cd Meshwork-firmware
 # Flash to target device using PlatformIO or Arduino IDE
 pio run --target upload
 ```
@@ -169,6 +169,6 @@ pio run --target upload
 ## The Vision
 
 The internet is infrastructure. Like roads, water, and electricity — it should belong to
-the communities that use it. NodeFree is the device that makes that real.
+the communities that use it. Meshwork is the device that makes that real.
 
 One device. One windowsill. Free internet for your whole neighborhood. Forever.

@@ -10,9 +10,12 @@ GET (read-only) endpoints remain public for mesh transparency.
 import os
 import secrets
 import hashlib
+import logging
 from typing import Optional
 from fastapi import Request, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+logger = logging.getLogger(__name__)
 
 TOKEN_FILE = os.path.join(os.path.dirname(__file__), ".meshwork_token")
 
@@ -35,6 +38,7 @@ def init_auth() -> str:
     Returns the plaintext token (only shown once on first boot).
     """
     if os.path.exists(TOKEN_FILE):
+        logger.info("Auth token file already exists")
         return ""  # Token already exists, don't reveal it again
 
     token = _generate_token()
@@ -43,6 +47,7 @@ def init_auth() -> str:
     with open(TOKEN_FILE, "w") as f:
         f.write(hashed)
 
+    logger.info("Generated new auth token on first boot")
     return token
 
 
@@ -58,8 +63,12 @@ def verify_token(token: str) -> bool:
     """Verify a token against the stored hash."""
     stored_hash = get_stored_hash()
     if stored_hash is None:
+        logger.warning("Token verification failed: no stored hash found")
         return False
-    return _hash_token(token) == stored_hash
+    result = _hash_token(token) == stored_hash
+    if not result:
+        logger.warning("Token verification failed: invalid token")
+    return result
 
 
 async def require_auth(
@@ -72,11 +81,14 @@ async def require_auth(
     Accepts Bearer token in Authorization header.
     """
     if credentials is None:
+        logger.warning("Authentication required: no credentials provided")
         raise HTTPException(status_code=401, detail="Authentication required")
 
     if not verify_token(credentials.credentials):
+        logger.warning("Authentication failed: invalid token")
         raise HTTPException(status_code=403, detail="Invalid token")
 
+    logger.debug("Authentication successful")
     return credentials.credentials
 
 
@@ -84,4 +96,5 @@ def reset_token() -> str:
     """Reset the auth token. Returns the new plaintext token."""
     if os.path.exists(TOKEN_FILE):
         os.remove(TOKEN_FILE)
+        logger.warning("Auth token reset")
     return init_auth()

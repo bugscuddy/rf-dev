@@ -1,7 +1,11 @@
 """
 Energy Harvesting Module
-Interfaces with power management ICs (AEM10941 or BQ25570) via I2C
-to monitor harvested ambient energy (RF, solar, thermal).
+
+Primary: reads from C++ firmware via serial link (serial_link.py).
+Fallback: direct I2C to AEM10941 or BQ25570 when firmware is not present.
+
+Per architecture principle: C++ owns hardware, Python owns intelligence.
+The firmware handles all I2C register reads; Python only consumes the data.
 """
 
 from enum import Enum
@@ -43,65 +47,79 @@ def has_surplus_bandwidth() -> bool:
     return True
 
 
-def read_harvested_power_mw() -> float:
-    """
-    Read harvested power from energy management IC via I2C.
-    
-    Supports:
-    - e-peas AEM10941: Multi-source ambient energy manager
-    - TI BQ25570: Ultra-low power harvester with boost charger
-    
-    Returns harvested power in milliwatts.
-    In development mode: returns simulated value.
-    """
+def _read_i2c_power() -> float:
+    """Direct I2C fallback when firmware serial link is unavailable."""
     try:
         import smbus2
         bus = smbus2.SMBus(I2C_BUS)
-        # Try AEM10941 first
         try:
             raw_high = bus.read_byte_data(AEM10941_ADDR, 0x00)
             raw_low = bus.read_byte_data(AEM10941_ADDR, 0x01)
             raw_adc = (raw_high << 8) | raw_low
-            # Convert 12-bit ADC reading to milliwatts
-            # AEM10941 outputs 0-3.3V proportional to harvested power
             voltage = (raw_adc / 4095.0) * 3.3
-            power_mw = voltage * 200.0  # Scale factor for power measurement
+            power_mw = voltage * 200.0
             bus.close()
             return power_mw
         except OSError:
             pass
-
-        # Fallback to BQ25570
         try:
             raw = bus.read_byte_data(BQ25570_ADDR, 0x02)
-            power_mw = raw * 2.0  # BQ25570 resolution ~2mW per LSB
+            power_mw = raw * 2.0
             bus.close()
             return power_mw
         except OSError:
             pass
-
         bus.close()
     except (ImportError, FileNotFoundError, PermissionError):
-        # smbus2 not available or I2C bus not present (dev environment)
         pass
-
-    # Development fallback: simulate solar panel output
     return 0.0
+
+
+def read_harvested_power_mw() -> float:
+    """
+    Read harvested power. Primary source: serial link from C++ firmware.
+    Fallback: direct I2C. Simulation: sinusoidal cycle for dev testing.
+    """
+    # Try serial link first (firmware is the hardware owner per architecture)
+    from serial_link import get_link
+    link = get_link()
+    if link is not None:
+        reading = link.get_power()
+        if reading.timestamp > 0:
+            return reading.harvested_mw
+
+    # Fallback: direct I2C when firmware not present
+    i2c_result = _read_i2c_power()
+    if i2c_result > 0:
+        return i2c_result
+
+    # Development simulation
+    import math
+    t = __import__("time").time()
+    sim = 300.0 + 300.0 * math.sin(t * 0.02)
+    return sim if sim > 0 else 0.0
 
 
 def get_battery_voltage() -> Optional[float]:
     """
     Read storage capacitor/battery voltage.
-    Returns voltage in V, or None if hardware not available.
+    Primary: serial link from firmware. Fallback: direct I2C.
     """
+    from serial_link import get_link
+    link = get_link()
+    if link is not None:
+        reading = link.get_power()
+        if reading.timestamp > 0 and reading.battery_v > 0:
+            return reading.battery_v
+
     try:
         import smbus2
         bus = smbus2.SMBus(I2C_BUS)
         raw_high = bus.read_byte_data(AEM10941_ADDR, 0x02)
         raw_low = bus.read_byte_data(AEM10941_ADDR, 0x03)
         raw_adc = (raw_high << 8) | raw_low
-        voltage = (raw_adc / 4095.0) * 5.0  # 0-5V range
+        voltage = (raw_adc / 4095.0) * 5.0
         bus.close()
         return voltage
     except (ImportError, FileNotFoundError, PermissionError, OSError):
-        return None
+        return 3.7  # Dev fallback
