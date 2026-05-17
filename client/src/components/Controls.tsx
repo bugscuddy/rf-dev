@@ -34,10 +34,10 @@ export default function Controls({ api, status, onRefresh }: Props) {
           Enable to share your internet connection with the mesh network.
         </p>
         <div className="control-row">
-          <button className="btn-green" onClick={() => post("/api/set-gateway", { enabled: true })}>
+          <button className={`btn-green ${status?.is_gateway ? "btn-active" : ""}`} onClick={() => post("/api/set-gateway", { enabled: true })}>
             Enable Gateway
           </button>
-          <button className="btn-red" onClick={() => post("/api/set-gateway", { enabled: false })}>
+          <button className={`btn-red ${!status?.is_gateway ? "btn-active" : ""}`} onClick={() => post("/api/set-gateway", { enabled: false })}>
             Disable Gateway
           </button>
         </div>

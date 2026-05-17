@@ -12,7 +12,7 @@ from db import init_db, get_metrics_history, log_metric
 
 init_db()
 
-app = FastAPI(title="NodeFree API")
+app = FastAPI(title="Meshwork API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -121,7 +121,11 @@ async def set_bandwidth_cap(body: BandwidthCap):
     _bandwidth_cap = body.cap_mbps
     return SuccessResponse(success=True, message=f"Bandwidth cap set to {body.cap_mbps} Mbps")
 
+@app.get("/")
+async def root():
+    return {"status": "active", "service": "Meshwork API", "version": "0.1"}
+
 # Serve React build at root (must be last)
-static_dir = os.path.join(os.path.dirname(__file__), "../nodefree-ui/dist")
+static_dir = os.path.join(os.path.dirname(__file__), "../Meshwork-ui/dist")
 if os.path.exists(static_dir):
     app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")

@@ -34,13 +34,17 @@ export default function MetricsChart({ metrics, isGatewayActive }: Props) {
 
       {/* Gateway activity strip */}
       <div className="gateway-strip">
-        {metrics.map((m, i) => (
-          <div
-            key={i}
-            className={`gateway-cell ${m.is_gateway ? "active" : "inactive"}`}
-            title={`${m.date}: ${m.is_gateway ? "Gateway Active" : "Inactive"}`}
-          />
-        ))}
+        {metrics.map((m, i) => {
+          // Last cell reflects current real-time gateway state
+          const isActive = i === metrics.length - 1 ? isGatewayActive : m.is_gateway;
+          return (
+            <div
+              key={i}
+              className={`gateway-cell ${isActive ? "active" : "inactive"}`}
+              title={`${m.date}: ${isActive ? "Gateway Active" : "Inactive"}`}
+            />
+          );
+        })}
       </div>
       <div className="gateway-strip-legend">
         <span className={isGatewayActive ? "current-status" : ""}>

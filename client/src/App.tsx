@@ -50,7 +50,7 @@ export default function App() {
       <header>
         <div className="logo">
           <span className="logo-icon">⬡</span>
-          <span className="logo-text">NodeFree</span>
+          <span className="logo-text">Meshwork</span>
         </div>
         <div className="header-right">
           <span className={`status-dot ${status ? "online" : "offline"}`} />

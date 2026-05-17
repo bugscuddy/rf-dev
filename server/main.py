@@ -25,7 +25,7 @@ async def mesh_loop():
             await asyncio.sleep(30)
 
 async def main():
-    print("NodeFree v0.1 - Booting...")
+    print("Meshwork v0.1 - Booting...")
     config = uvicorn.Config(app, host="0.0.0.0", port=8000, log_level="info")
     server = uvicorn.Server(config)
     await asyncio.gather(

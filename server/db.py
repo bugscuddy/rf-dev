@@ -2,7 +2,7 @@ import sqlite3
 import os
 from datetime import datetime
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "nodefree.db")
+DB_PATH = os.path.join(os.path.dirname(__file__), "Meshwork.db")
 
 def init_db():
     with sqlite3.connect(DB_PATH) as conn:
