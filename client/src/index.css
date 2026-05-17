@@ -1,0 +1,158 @@
+:root {
+  --text: #374151;
+  --text-h: #111827;
+  --text-muted: #6b7280;
+  --bg: #f9fafb;
+  --bg-card: #ffffff;
+  --border: #e5e7eb;
+  --border-light: #f3f4f6;
+  --code-bg: #f3f4f6;
+  
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --primary-light: #dbeafe;
+  
+  --success: #10b981;
+  --success-light: #d1fae5;
+  
+  --warning: #f59e0b;
+  --warning-light: #fef3c7;
+  
+  --danger: #ef4444;
+  --danger-light: #fee2e2;
+  
+  --accent: #8b5cf6;
+  --accent-bg: rgba(139, 92, 246, 0.1);
+  --accent-border: rgba(139, 92, 246, 0.3);
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+
+  font: 15px/1.5 var(--sans);
+  color-scheme: light;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 14px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #d1d5db;
+    --text-h: #f9fafb;
+    --text-muted: #9ca3af;
+    --bg: #0f172a;
+    --bg-card: #1e293b;
+    --border: #334155;
+    --border-light: #1e293b;
+    --code-bg: #1e293b;
+    
+    --primary: #60a5fa;
+    --primary-hover: #3b82f6;
+    --primary-light: rgba(96, 165, 250, 0.15);
+    
+    --success: #34d399;
+    --success-light: rgba(52, 211, 153, 0.15);
+    
+    --warning: #fbbf24;
+    --warning-light: rgba(251, 191, 36, 0.15);
+    
+    --danger: #f87171;
+    --danger-light: rgba(248, 113, 113, 0.15);
+    
+    --accent: #a78bfa;
+    --accent-bg: rgba(167, 139, 250, 0.15);
+    --accent-border: rgba(167, 139, 250, 0.3);
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+  }
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--heading);
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0;
+}
+
+h1 {
+  font-size: 32px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+h2 {
+  font-size: 20px;
+  line-height: 1.3;
+  letter-spacing: -0.25px;
+}
+
+h3 {
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font-family: var(--sans);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+input {
+  font-family: var(--sans);
+}
+
+code,
+.counter {
+  font-family: var(--mono);
+  display: inline-flex;
+  border-radius: 6px;
+  color: var(--text-h);
+}
+
+code {
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 3px 8px;
+  background: var(--code-bg);
+}
