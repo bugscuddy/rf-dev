@@ -16,6 +16,8 @@ export interface Neighbor {
   is_gateway: boolean;
   generosity_score: number;
   bandwidth_available_mbps: number;
+  lat: number;
+  lng: number;
 }
 
 export interface MetricPoint {

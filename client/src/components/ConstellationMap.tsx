@@ -59,7 +59,7 @@ export default function ConstellationMap({ neighbors, status }: Props) {
         ctx.moveTo(center.x, center.y);
         ctx.lineTo(x, y);
         ctx.strokeStyle = node.is_gateway
-          ? `rgba(0,255,136,${alpha})`
+          ? `rgba(74, 222, 128,${alpha})`
           : `rgba(100,116,139,${Math.min(alpha, 0.5)})`;
         ctx.lineWidth = node.is_gateway ? 1.5 : 1;
         ctx.setLineDash(node.is_gateway ? [] : [4, 4]);
@@ -71,7 +71,7 @@ export default function ConstellationMap({ neighbors, status }: Props) {
         if (packetProgress < 1) {
           const px = center.x + (x - center.x) * packetProgress;
           const py = center.y + (y - center.y) * packetProgress;
-          const packetColor = node.is_gateway ? "#00ff88" : "#60a5fa";
+          const packetColor = node.is_gateway ? "#4ade80" : "#60a5fa";
           ctx.beginPath();
           ctx.arc(px, py, 2, 0, Math.PI * 2);
           ctx.fillStyle = packetColor;
@@ -84,7 +84,7 @@ export default function ConstellationMap({ neighbors, status }: Props) {
 
       // Draw neighbor nodes with signal rings
       positions.forEach(({ node, x, y }) => {
-        const color = node.is_gateway ? "#00ff88" : "#3b82f6";
+        const color = node.is_gateway ? "#4ade80" : "#3b82f6";
         const r = node.is_gateway ? 7 : 5;
 
         // Signal ring per node
@@ -117,7 +117,7 @@ export default function ConstellationMap({ neighbors, status }: Props) {
       // Draw this node (center) with glow - color based on gateway status
       const centerGlow = 0.5 + Math.sin(t * 2) * 0.2;
       const isGateway = status?.is_gateway ?? false;
-      const centerColor = isGateway ? "#00ff88" : "#ffffff";
+      const centerColor = isGateway ? "#4ade80" : "#f87171";
       ctx.shadowColor = centerColor;
       ctx.shadowBlur = 15 * centerGlow;
       ctx.beginPath();
@@ -132,7 +132,7 @@ export default function ConstellationMap({ neighbors, status }: Props) {
       
       // Gateway status badge below center node
       if (isGateway) {
-        ctx.fillStyle = "#00ff88";
+        ctx.fillStyle = "#4ade80";
         ctx.font = "bold 8px Inter, sans-serif";
         ctx.fillText("GATEWAY", center.x, center.y + 24);
       } else {

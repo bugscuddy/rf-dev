@@ -6,6 +6,7 @@ import Controls from "./components/Controls";
 import MetricsChart from "./components/MetricsChart";
 import ConstellationMap from "./components/ConstellationMap";
 import NeighborMap from "./components/NeighborMap";
+import LocationMap from "./components/LocationMap";
 import type { NodeStatus, Neighbor, MetricPoint } from "./types";
 
 const API = import.meta.env.VITE_API_URL ?? "http://localhost:8080";
@@ -79,6 +80,7 @@ export default function App() {
         )}
         {activeTab === "network" && (
           <>
+            <LocationMap neighbors={neighbors} status={status} />
             <ConstellationMap neighbors={neighbors} status={status} />
             <NeighborMap neighbors={neighbors} />
           </>

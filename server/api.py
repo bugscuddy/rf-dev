@@ -65,6 +65,8 @@ class NeighborResponse(BaseModel):
     is_gateway: bool
     generosity_score: float
     bandwidth_available_mbps: float
+    lat: float
+    lng: float
 
 class MetricPoint(BaseModel):
     date: str
@@ -116,6 +118,8 @@ async def get_neighbors():
             is_gateway=n.is_gateway,
             generosity_score=n.generosity_score,
             bandwidth_available_mbps=n.bandwidth_available_mbps,
+            lat=n.lat,
+            lng=n.lng,
         ) for n in neighbors]
         logger.debug(f"Neighbors request: {len(response)} neighbors")
         return response

@@ -12,6 +12,8 @@ class Node:
     is_gateway: bool = False
     bandwidth_available_mbps: float = 0.0
     generosity_score: float = 1.0
+    lat: float = 0.0  # latitude
+    lng: float = 0.0  # longitude
 
 async def scan_neighbors() -> List[Node]:
     """Parse batctl neighbors output into Node list."""
@@ -43,11 +45,14 @@ def _parse_batctl_output(output: str) -> List[Node]:
 def _mock_neighbors() -> List[Node]:
     return [
         Node(id="node-a3f1", signal_strength=-62.0, latency_ms=4,
-             is_gateway=True, bandwidth_available_mbps=45.0, generosity_score=0.91),
+             is_gateway=True, bandwidth_available_mbps=45.0, generosity_score=0.91,
+             lat=40.1525, lng=-74.8432),  # Levittown, PA (gateway)
         Node(id="node-b7c2", signal_strength=-74.0, latency_ms=9,
-             is_gateway=False, bandwidth_available_mbps=0.0, generosity_score=0.78),
+             is_gateway=False, bandwidth_available_mbps=0.0, generosity_score=0.78,
+             lat=40.1527, lng=-74.8430),  # Very close
         Node(id="node-c9d3", signal_strength=-81.0, latency_ms=14,
-             is_gateway=False, bandwidth_available_mbps=0.0, generosity_score=0.65),
+             is_gateway=False, bandwidth_available_mbps=0.0, generosity_score=0.65,
+             lat=40.1523, lng=-74.8434),  # Very close
     ]
 
 async def advertise_as_gateway(node: Node):
