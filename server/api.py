@@ -1,16 +1,27 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List
+import asyncio
 import os
 import uuid
 
 from mesh import Node, scan_neighbors as _scan_neighbors
 from energy import get_power_mode, read_harvested_power_mw, PowerMode
 from db import init_db, get_metrics_history, log_metric
+from tvws import get_backhaul_status
+from auth import init_auth, require_auth, verify_token
 
 init_db()
+
+# Generate auth token on first boot
+_boot_token = init_auth()
+if _boot_token:
+    print(f"\n{'='*60}")
+    print(f"  FIRST BOOT - Save this access token (shown only once):")
+    print(f"  {_boot_token}")
+    print(f"{'='*60}\n")
 
 app = FastAPI(title="Meshwork API")
 
@@ -22,6 +33,7 @@ app.add_middleware(
 )
 
 NODE_ID = f"node-{uuid.uuid4().hex[:8]}"
+_state_lock = asyncio.Lock()
 _is_gateway = False
 _bandwidth_cap = 50.0
 
@@ -55,6 +67,7 @@ class MetricPoint(BaseModel):
     date: str
     gb_shared: float
     uptime_pct: float
+    is_gateway: bool = False
 
 class GatewayToggle(BaseModel):
     enabled: bool
@@ -107,19 +120,34 @@ async def get_metrics():
                 for i in range(30)]
     return [MetricPoint(**r) for r in rows]
 
+class AuthRequest(BaseModel):
+    token: str
+
+@app.post("/api/auth/login")
+async def login(body: AuthRequest):
+    if verify_token(body.token):
+        return {"success": True, "message": "Authenticated"}
+    return {"success": False, "message": "Invalid token"}
+
 @app.post("/api/set-gateway", response_model=SuccessResponse)
-async def set_gateway(body: GatewayToggle):
+async def set_gateway(body: GatewayToggle, _token: str = Depends(require_auth)):
     global _is_gateway
-    _is_gateway = body.enabled
+    async with _state_lock:
+        _is_gateway = body.enabled
     # Log the gateway status change to metrics
     log_metric(12.4, 95.0, _is_gateway)
     return SuccessResponse(success=True, message=f"Gateway mode set to {body.enabled}")
 
 @app.post("/api/set-bandwidth-cap", response_model=SuccessResponse)
-async def set_bandwidth_cap(body: BandwidthCap):
+async def set_bandwidth_cap(body: BandwidthCap, _token: str = Depends(require_auth)):
     global _bandwidth_cap
-    _bandwidth_cap = body.cap_mbps
+    async with _state_lock:
+        _bandwidth_cap = body.cap_mbps
     return SuccessResponse(success=True, message=f"Bandwidth cap set to {body.cap_mbps} Mbps")
+
+@app.get("/api/tvws/status")
+async def tvws_status():
+    return await get_backhaul_status()
 
 @app.get("/")
 async def root():

@@ -8,7 +8,7 @@ import ConstellationMap from "./components/ConstellationMap";
 import NeighborMap from "./components/NeighborMap";
 import type { NodeStatus, Neighbor, MetricPoint } from "./types";
 
-const API = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+const API = import.meta.env.VITE_API_URL ?? "http://localhost:8080";
 type Tab = "dashboard" | "network" | "controls";
 
 export default function App() {
